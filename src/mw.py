@@ -1,39 +1,30 @@
-# Multiplicative Weights algorithm
+import numpy as np
 
-from abc import ABC, abstractmethod
-import random
-
-class Expert(ABC):  
-    @abstractmethod
-    def get_answer(self) -> int:
-        raise NotImplementedError
-
-
-def choose_expert(weights: list[float]):
-    total_weight = sum(weights)
-    r = random.random()
-    for i in range(len(weights)):
-        if r < weights[i] / total_weight:
-            return i
-        r -= weights[i] / total_weight
-    return len(weights) - 1
-
-def get_loss(results: list[int]):
+class Expert:
     ...
 
-def mw(experts: list[Expert], eta: float, T: int, run_game: callable):
-    weights = [1 for _ in experts]
+def play_game(experts: list[Expert], player: Expert):
+    ...
+
+def get_loss(player: Expert, experts: list[Expert]):
+    losses = play_game(experts, player)
+    return sum(losses)
+
+v_get_loss = np.vectorize(get_loss)
+
+def mw(experts: list[Expert], eta: float, T: int):
+    weights = np.array([1 for _ in experts])
     total_loss = 0
     for _ in range(T):
-        expert_index = choose_expert(weights)
-        losses = [0 for _ in experts]
-        for i, expert in enumerate(experts):
-            ans = expert.get_answer()
-            results = run_game(ans)
-            losses[i] = get_loss(results)
+        # choose a random expert according to the weights
+        random_expert_index = np.random.choice(len(experts), p=weights / sum(weights))
 
-        for i in range(len(weights)):
-            weights[i] *= 1 - eta * losses[i]
+        # update total loss (based on expert chosen)
+        total_loss += losses[random_expert_index]
+
+        # play game for each expert against all experts (including itself)
+        losses = v_get_loss(experts, experts)
         
-        total_loss += losses[expert_index]
+        # update weights according to losses
+        weights *= np.exp(1 - eta * losses)
     return weights, total_loss
