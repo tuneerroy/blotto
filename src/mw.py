@@ -32,7 +32,7 @@ def play(p1, p2, iterations=10000, UNITS=100):
 
 
 def get_loss(player, opponent):
-    player_wins, opponent_wins = play(player, opponent)
+    player_wins, opponent_wins, _ = play(player, opponent)
     return opponent_wins / (player_wins + opponent_wins)
 
 
@@ -43,6 +43,7 @@ def mw(experts: list, opponent, eta=0.1, T=1000):
     n = len(experts)
     weights = np.ones(n)
     total_loss = 0
+
     for _ in range(T):
         # choose a random expert according to the weights
         random_expert_index = np.random.choice(n, p=weights / weights.sum())
@@ -51,7 +52,7 @@ def mw(experts: list, opponent, eta=0.1, T=1000):
         losses = v_get_loss(experts, opponent)
 
         # update total loss (based on expert chosen)
-        total_loss += losses[random_expert_index]
+        total_loss += losses[random_expert_index] > 0.5
 
         # update weights according to losses
         weights *= np.exp(1 - eta * losses)
