@@ -33,7 +33,7 @@ def create_more_experts(num_new: int, starting_experts=10):
     experts = np.array(read_in_experts())
     if len(experts) < starting_experts:
         experts = np.random.rand(starting_experts, RESOURCES)
-        starting_experts -= len(experts)
+        num_new -= len(experts)
 
     min_loss = float("inf")
     for i in range(num_new):
