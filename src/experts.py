@@ -27,6 +27,7 @@ def dump_experts(experts):
         for expert in experts:
             f.write(" ".join([str(x) for x in expert]) + "\n")
 
+VARIANCE = 0.025
 
 def create_more_experts(num_new: int, starting_experts=10):
     
@@ -43,9 +44,18 @@ def create_more_experts(num_new: int, starting_experts=10):
         min_loss = min(min_loss, loss)
         print("Loss: ", loss, " Min loss: ", min_loss)
         new_expert = get_new_expert(experts, weights)
+
+        # randomly perturb the new expert
+        new_expert += np.random.normal(0, VARIANCE, RESOURCES)
+        new_expert[new_expert < 0] = 0
+        new_expert = new_expert / np.sum(new_expert)
+
         experts = np.vstack((experts, new_expert))
         print("New expert created...")
         print("-" * 50)
+
+        if i % 5 == 0:
+            dump_experts(experts)
 
     dump_experts(experts)
 
