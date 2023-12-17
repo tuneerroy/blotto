@@ -41,7 +41,6 @@ def mw(experts: list, opponent, eta=0.1, T=100):
         expert_losses += losses
         total_loss += losses[random_expert_index] # update total loss (based on expert chosen)
 
-
         # update weights according to losses
         results_expected = experts_play(experts, opponent, iterations=1000) 
         losses_expected = results_expected[:, 1] / (results_expected[:, 0] + results_expected[:, 1])
