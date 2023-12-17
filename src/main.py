@@ -1,6 +1,6 @@
 from mw import *
+from constants import *
 
-RESOURCES = 10
 N_EXPERTS = 50
 T = 100
 ETA = np.sqrt(np.log(N_EXPERTS) / T)

@@ -1,7 +1,7 @@
 import numpy as np
+from constants import *
 
-
-def get_allocations(p, iterations, UNITS):
+def get_allocations(p, iterations):
     p = p / np.sum(p)
     p_choices = np.random.choice(len(p), (iterations, UNITS), replace=True, p=p)  # (iterations, UNITS)
     p_alloc = np.apply_along_axis(lambda x: np.histogram(x, bins=np.arange(len(p) + 1))[0], axis=1, arr=p_choices)  # (iterations, n)
@@ -15,9 +15,14 @@ def play(p1_alloc, p2_alloc):
     ties = np.sum(p1_resources_won == p2_resources_won)  # scalar
     return np.array([p1_wins, p2_wins, ties])
 
-def experts_play(experts, opponent, iterations=1000, UNITS=100):
-    opponent_alloc = get_allocations(opponent, iterations, UNITS)
-    return np.apply_along_axis(lambda x: play(get_allocations(x, iterations, UNITS), opponent_alloc), axis=1, arr=experts)
+def experts_play(experts, opponent, iterations=1000):
+    opponent_alloc = get_allocations(opponent, iterations)
+    return np.apply_along_axis(lambda x: play(get_allocations(x, iterations), opponent_alloc), axis=1, arr=experts)
+
+def play_dist(p1, p2, iterations=1000):
+    p1_alloc = get_allocations(p1, iterations)
+    p2_alloc = get_allocations(p2, iterations)
+    return play(p1_alloc, p2_alloc)
 
 
 def mw(experts: list, opponent, eta=0.1, T=100):
