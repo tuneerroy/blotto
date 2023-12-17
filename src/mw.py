@@ -13,11 +13,11 @@ def play(p1_alloc, p2_alloc):
     p1_wins = np.sum(p1_resources_won > p2_resources_won)  # scalar
     p2_wins = np.sum(p2_resources_won > p1_resources_won)  # scalar
     ties = np.sum(p1_resources_won == p2_resources_won)  # scalar
-    return np.array(p1_wins, p2_wins, ties)
+    return np.array([p1_wins, p2_wins, ties])
 
 def experts_play(experts, opponent, iterations=1000, UNITS=100):
     opponent_alloc = get_allocations(opponent, iterations, UNITS)
-    return np.apply_along_axis(lambda x: play(get_allocations(x, iterations, UNITS), opponent_alloc, iterations, UNITS), axis=1, arr=experts)
+    return np.apply_along_axis(lambda x: play(get_allocations(x, iterations, UNITS), opponent_alloc), axis=1, arr=experts)
 
 
 def mw(experts: list, opponent, eta=0.1, T=100):
@@ -27,7 +27,6 @@ def mw(experts: list, opponent, eta=0.1, T=100):
     expert_losses = np.zeros(n)
 
     for _ in range(T):
-        print(f"Current loss: {total_loss}")
         # choose a random expert according to the weights
         random_expert_index = np.random.choice(n, p=weights / weights.sum())
 
