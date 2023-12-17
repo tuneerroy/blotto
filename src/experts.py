@@ -51,6 +51,8 @@ def create_more_experts(num_new: int, starting_experts=10):
         # randomly choose a random amount of experts
         num_experts = np.random.choice(range(1, len(experts) - 1))
         target_experts = experts[np.random.choice(range(len(experts)), num_experts)]
+        if len(best_experts) > 0:
+            target_experts = np.vstack((target_experts, best_experts))
 
         weights, loss, _ = mw(target_experts, opponent, eta=ETA, T=T)
         new_expert = get_new_expert(target_experts, weights)
