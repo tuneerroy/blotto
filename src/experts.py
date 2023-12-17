@@ -1,8 +1,9 @@
-from mw import *
-from constants import *
 import os
+
 import numpy as np
 
+from constants import *
+from mw import *
 from mw import mw
 
 
@@ -27,10 +28,11 @@ def dump_experts(experts):
         for expert in experts:
             f.write(" ".join([str(x) for x in expert]) + "\n")
 
+
 VARIANCE = 0.025
 
+
 def create_more_experts(num_new: int, starting_experts=10):
-    
     experts = np.array(read_in_experts())
     if len(experts) < starting_experts:
         experts = np.random.rand(starting_experts, RESOURCES)
@@ -58,6 +60,7 @@ def create_more_experts(num_new: int, starting_experts=10):
             dump_experts(experts)
 
     dump_experts(experts)
+
 
 if __name__ == "__main__":
     create_more_experts(50)

@@ -1,4 +1,5 @@
 import numpy as np
+
 from constants import *
 from mw import *
 
@@ -6,6 +7,7 @@ curr_expert = np.ones(RESOURCES)
 experts = [curr_expert]
 
 VARIANCE = 0.025
+
 
 def get_new_expert(expert, iterations=1000):
     new_expert = expert
@@ -35,11 +37,11 @@ def get_new_expert(expert, iterations=1000):
             momentum = VARIANCE
         else:
             momentum += VARIANCE
-    
+
     return last_expert
+
 
 new_expert = get_new_expert(curr_expert)
 res = play_dist(new_expert, curr_expert)
 print(res)
 print(res[0] / (res[0] + res[1]))
-
