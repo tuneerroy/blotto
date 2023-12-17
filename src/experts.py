@@ -38,14 +38,24 @@ def create_more_experts(num_new: int, starting_experts=10):
         experts = np.random.rand(starting_experts, RESOURCES)
         num_new -= len(experts)
 
+    best_experts = []
+
     min_loss = float("inf")
     for i in range(num_new):
         print("Creating new expert: ", i + 1)
-        opponent = np.random.rand(RESOURCES)
+        if len(best_experts) > 2 and np.random.rand() < 0.3:
+            opponent = np.random.choice(best_experts)
+        else:
+            opponent = np.random.rand(RESOURCES)
+
         weights, loss, _ = mw(experts, opponent, eta=ETA, T=T)
-        min_loss = min(min_loss, loss)
-        print("Loss: ", loss, " Min loss: ", min_loss)
         new_expert = get_new_expert(experts, weights)
+
+        if loss < min_loss:
+            min_loss = loss
+            best_experts.append(new_expert)
+
+        print("Loss: ", loss, " Min loss: ", min_loss)
 
         # randomly perturb the new expert
         new_expert += np.random.normal(0, VARIANCE, RESOURCES)
